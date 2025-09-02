@@ -1,4 +1,5 @@
 import Question from "../models/Question.model.js";
+import Result from "../models/Result.model.js";
 
 // GET /api/exam/questions
 export const getQuestions = async (req, res) => {
@@ -25,5 +26,47 @@ export const getQuestions = async (req, res) => {
 
 // POST /api/exam/submit
 export const submitExam = async (req, res) => {
- 
+  try {
+    const { userId, answers } = req.body;
+
+    // Check for valid user & data
+    if (!userId || !answers || !Array.isArray(answers)) {
+      return res.status(400).json({ message: "Invalid submission data" });
+    }
+
+    // Fetch all question IDs included in submission
+    const questionIds = answers.map((a) => a.questionId);
+    const questions = await Question.find({ _id: { $in: questionIds } });
+
+    // Build evaluated answers
+    let score = 0;
+    const evaluatedAnswers = answers.map((ans) => {
+      const question = questions.find(
+        (q) => q._id.toString() === ans.questionId
+      );
+
+      const isCorrect =
+        question && question.correctAnswer === ans.selectedAnswer;
+
+      if (isCorrect) score++;
+
+      return {
+        questionId: ans.questionId,
+        selectedAnswer: ans.selectedAnswer,
+        isCorrect,
+      };
+    });
+
+    // Save result
+    const newResult = new Result({ userId, answers: evaluatedAnswers, score });
+    await newResult.save();
+    res.status(201).json({
+      message: "Exam submitted successfully",
+      score,
+      total: answers.length,
+    });
+  } catch (error) {
+    console.error("Error submitting exam:", error);
+    res.status(500).json({ message: "Failed to submit exam" });
+  }
 };
