@@ -8,6 +8,8 @@ import router from "./routes/index.routes.js";
 // mongodb connection
 dbConnection();
 
+
+
 // route middleware
 app.use("/api", router);
 
