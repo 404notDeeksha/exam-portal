@@ -1,7 +1,8 @@
 import User from "../models/User.model.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-// POST /api/register
+// POST /api/auth/register
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -36,7 +37,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// POST /api/login
+// POST /api/auth/login
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
