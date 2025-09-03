@@ -17,7 +17,6 @@ export const protect = async (req, res, next) => {
 
       // Attach user to request (without password)
       req.user = await User.findById(decoded.id).select("-passwordHash");
-      console.log("Got Token");
       next();
     } catch (error) {
       console.error("Auth error:", error.message);
