@@ -3,11 +3,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
 
-export const registerUser = createAsyncThunk(
-  "auth/register",
+export const loginUser = createAsyncThunk(
+  "auth/login",
   async (userData, { rejectWithValue }) => {
     try {
-      return await authService.registerAPI(userData);
+      return await authService.loginAPI(userData);
     } catch (error) {
       return rejectWithValue(error); // message from axios interceptor
     }
