@@ -4,7 +4,7 @@ import { loginUser } from "./authThunks";
 
 const initialState = {
   user: null,
-  token: null,  
+  token: null,
   loading: false,
   error: null,
 };
@@ -12,10 +12,11 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
+
   reducers: {
     resetAuthState: (state) => {
       state.user = null;
-      state.token = null; 
+      state.token = null;
       state.loading = false;
       state.error = null;
     },
