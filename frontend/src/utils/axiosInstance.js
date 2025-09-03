@@ -1,5 +1,6 @@
 // Centralized API handler with interceptors for errors and JWT.
 import axios from "axios";
+import store from "../app/store";
 
 // Common error handler
 const handleError = (error) => {
@@ -22,14 +23,14 @@ export const privateAPI = axios.create({
 
 // Attach token to private requests
 privateAPI.interceptors.request.use((config) => {
-    const token = localStorage.getItem("auth_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  });
-  
-  // Add error handling to both
-  publicAPI.interceptors.response.use((res) => res, handleError);
-  privateAPI.interceptors.response.use((res) => res, handleError);
+  const state = store.getState();
+  const token = state.auth?.token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
+// Add error handling to both
+publicAPI.interceptors.response.use((res) => res, handleError);
+privateAPI.interceptors.response.use((res) => res, handleError);
