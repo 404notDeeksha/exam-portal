@@ -8,4 +8,9 @@ const registerAPI = async (userData) => {
   return response.data;
 };
 
-export default { registerAPI };
+const loginAPI = async (userData) => {
+  const response = await publicAPI.post(routes.loginAPI, userData);
+  return response.data;
+};
+
+export default { registerAPI, loginAPI };
