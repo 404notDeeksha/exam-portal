@@ -6,6 +6,7 @@ import { NotFound } from "./components/NotFound";
 import { RedirectIfAuth } from "./components/ProtectedRoutes/RedirectIfAuth";
 import { HomePage } from "./pages/HomePage";
 import { RequireAuth } from "./components/ProtectedRoutes/RequireAuth";
+import { Exam } from "./pages/Exam";
 
 export const AppRoutes = () => {
   return (
@@ -18,6 +19,7 @@ export const AppRoutes = () => {
       {/* protected routes */}
       <Route element={<RequireAuth />}>
         <Route path={routes.home} element={<HomePage />} />
+        <Route path={routes.exam} element={<Exam />} />
       </Route>
 
       <Route path="/home" element={<Navigate to={routes.home} replace />} />

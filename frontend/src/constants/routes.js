@@ -3,6 +3,7 @@ export const routes = {
   login: "/login",
   notFound: "*",
   home: "/",
+  exam: "/exam",
 
   registerAPI: "/auth/register",
   loginAPI: "/auth/login",
