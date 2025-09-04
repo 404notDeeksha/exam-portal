@@ -24,7 +24,7 @@ export const getExamQuestions = createAsyncThunk(
   }
 );
 
-export const submitExamAPI = createAsyncThunk(
+export const submitExam = createAsyncThunk(
   "exam/submit",
   async ({ userId, answers }, thunkAPI) => {
     try {

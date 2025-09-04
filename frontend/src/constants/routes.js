@@ -9,4 +9,5 @@ export const routes = {
   registerAPI: "/auth/register",
   loginAPI: "/auth/login",
   questionsAPI: "/exam/questions",
+  submitAPI: "/exam/submit",
 };
