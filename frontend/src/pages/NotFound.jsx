@@ -22,12 +22,16 @@ export const NotFound = () => {
       justifyContent="center"
       minHeight="100vh"
       textAlign="center"
-      sx={{ bgcolor: "#f9f9f9", p: 3 }}
+      sx={{
+        bgcolor: "#f9f9f9",
+        p: 3,
+      }}
+      width="100vw"
     >
       <Typography variant="h1" color="primary" gutterBottom>
         404
       </Typography>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" color="text.secondary" gutterBottom>
         Oops! The page you’re looking for doesn’t exist.
       </Typography>
       <Typography variant="body1" color="text.secondary" mb={3}>
