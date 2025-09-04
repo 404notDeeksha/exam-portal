@@ -4,6 +4,7 @@ export const routes = {
   notFound: "*",
   home: "/",
   exam: "/exam",
+  result: "/result",
 
   registerAPI: "/auth/register",
   loginAPI: "/auth/login",
