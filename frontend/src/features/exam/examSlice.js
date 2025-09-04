@@ -46,6 +46,13 @@ const examSlice = createSlice({
       .addCase(getExamQuestions.fulfilled, (state, action) => {
         state.loading = false;
         state.questions = action.payload;
+
+        // sanitise the data for correctAnswer if it sneaks in
+        // state.questions = action.payload.map((q) => ({
+        //   _id: q._id,
+        //   text: q.text,
+        //   options: q.options,
+        // }));
       })
       .addCase(getExamQuestions.rejected, (state, action) => {
         state.loading = false;
