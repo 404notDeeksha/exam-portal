@@ -16,11 +16,8 @@ export const HomePage = () => {
 
   return (
     <Box
-      position="fixed"
-      top={0}
-      left={0}
-      right={0}
-      bottom={0}
+      minHeight="100vh"
+      width="100%" 
       p={1}
       display="flex"
       flexDirection="column"

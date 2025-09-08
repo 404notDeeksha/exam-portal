@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loginUser } from "./authThunks";
 
+// user = { id, name, email, token}
 const initialState = {
   user: null,
   token: null,
