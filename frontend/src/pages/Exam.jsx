@@ -10,12 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  selectAnswer,
-  goToNext,
-  goToPrev,
-  // tickTimer,
-} from "../features/exam/examSlice";
+import { selectAnswer, goToNext, goToPrev } from "../features/exam/examSlice";
 import { getExamQuestions, submitExam } from "../features/exam/examThunks";
 
 import { useNavigate } from "react-router-dom";
@@ -33,7 +28,6 @@ export const Exam = () => {
   console.log("Questions", questions);
   console.log("current index", currentIndex);
   console.log("answers", answers);
-  // console.log("Timer", timer);
   console.log("Loading", loading);
 
   const currentQuestion = questions[currentIndex];
@@ -45,19 +39,6 @@ export const Exam = () => {
     }
   }, [dispatch, questions.length]);
 
-  // Timer logic
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     // if (timer > 0) {
-  //     dispatch(tickTimer());
-  //     // } else {
-  //     //   handleSubmit(); // auto-submit
-  //     // }
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, [dispatch]);
 
   const handleOptionChange = (event) => {
     dispatch(

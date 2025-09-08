@@ -6,7 +6,6 @@ const initialState = {
   questions: [],
   currentIndex: 0,
   answers: {}, // { questionId: selectedAnswer }
-  // timer: 30 * 60,
   loading: false,
   error: null,
   result: null,
@@ -30,14 +29,6 @@ const examSlice = createSlice({
         state.currentIndex--;
       }
     },
-    // tickTimer: (state) => {
-    //   if (state.timer > 0) {
-    //     state.timer--;
-    //   }
-    //   else {
-    //     state.loading = true;
-    //   }
-    // },
     resetExam: () => initialState,
   },
   extraReducers: (builder) => {
@@ -79,12 +70,7 @@ const examSlice = createSlice({
   },
 });
 
-export const {
-  selectAnswer,
-  goToNext,
-  goToPrev,
-  // tickTimer,
-  resetExam,
-} = examSlice.actions;
+export const { selectAnswer, goToNext, goToPrev, resetExam } =
+  examSlice.actions;
 
 export default examSlice.reducer;
