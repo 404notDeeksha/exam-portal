@@ -19,31 +19,30 @@ const answerSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const resultSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const resultSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    answers: {
+      type: [answerSchema],
+      required: true,
+    },
+    score: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    startedAt: { type: Date, required: true },
+    submittedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  answers: {
-    type: [answerSchema],
-    required: true,
-  },
-  score: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-  submittedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  sessionId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ExamSession",
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
 const Result = mongoose.model("Result", resultSchema);
 

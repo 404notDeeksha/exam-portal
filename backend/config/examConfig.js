@@ -1,0 +1,3 @@
+export const EXAM_DURATION_MINUTES =
+  Number(process.env.EXAM_DURATION_MINUTES) || 30;
+export const EXAM_DURATION_MS = EXAM_DURATION_MINUTES * 60 * 1000;

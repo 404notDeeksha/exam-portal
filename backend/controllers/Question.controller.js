@@ -1,3 +1,4 @@
+import { EXAM_DURATION_MS } from "../config/examConfig.js";
 import Question from "../models/Question.model.js";
 import Result from "../models/Result.model.js";
 
@@ -27,14 +28,31 @@ export const getQuestions = async (req, res) => {
 // POST /api/exam/submit
 export const submitExam = async (req, res) => {
   try {
-    const { userId, answers } = req.body;
+    const { userId, answers, startedAt } = req.body;
 
     // Check for valid user & data
     if (!userId || !answers || !Array.isArray(answers)) {
       return res.status(400).json({ message: "Invalid submission data" });
     }
 
-    // Fetch all question IDs included in submission
+    const startedAtMs = new Date(startedAt).getTime();
+    if (Number.isNaN(startedAtMs)) {
+      return res.status(400).json({ message: "Invalid startedAt timestamp" });
+    }
+
+    // 1. Reject if already submitted
+    const existing = await Result.findOne({ userId });
+    if (existing) {
+      return res.status(409).json({ message: "Exam already submitted" });
+    }
+
+    // 2. Reject if expired
+    const now = Date.now();
+    if (now > startedAtMs + EXAM_DURATION_MS) {
+      return res.status(400).json({ message: "Exam time expired" });
+    }
+
+    // 3. Fetch all question IDs included in submission
     const questionIds = answers.map((a) => a.questionId);
     const questions = await Question.find({ _id: { $in: questionIds } });
 
@@ -57,9 +75,16 @@ export const submitExam = async (req, res) => {
       };
     });
 
-    // Save result
-    const newResult = new Result({ userId, answers: evaluatedAnswers, score });
+    // 4. Save result
+    const newResult = new Result({
+      userId,
+      answers: evaluatedAnswers,
+      score,
+      startedAt: new Date(startedAtMs),
+      submittedAt: new Date(now),
+    });
     await newResult.save();
+
     res.status(201).json({
       message: "Exam submitted successfully",
       score,

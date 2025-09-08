@@ -1,9 +1,12 @@
 import express from "express";
-const examRouter = express.Router();
+const questionRouter = express.Router();
 
-import { getQuestions, submitExam } from "../controllers/Question.controller.js";
+import {
+  getQuestions,
+  submitExam,
+} from "../controllers/Question.controller.js";
 
-examRouter.route("/questions").get(getQuestions);
-examRouter.route("/submit").post(submitExam);
+questionRouter.route("/questions").get(getQuestions);
+questionRouter.route("/submit").post(submitExam);
 
-export default examRouter;
+export default questionRouter;
