@@ -14,7 +14,7 @@ import {
   selectAnswer,
   goToNext,
   goToPrev,
-  tickTimer,
+  // tickTimer,
 } from "../features/exam/examSlice";
 import { getExamQuestions, submitExam } from "../features/exam/examThunks";
 
@@ -33,7 +33,7 @@ export const Exam = () => {
   console.log("Questions", questions);
   console.log("current index", currentIndex);
   console.log("answers", answers);
-  console.log("Timer", timer);
+  // console.log("Timer", timer);
   console.log("Loading", loading);
 
   const currentQuestion = questions[currentIndex];
@@ -46,6 +46,7 @@ export const Exam = () => {
   }, [dispatch, questions.length]);
 
   // Timer logic
+
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     // if (timer > 0) {
@@ -85,13 +86,13 @@ export const Exam = () => {
     navigate(routes.result, { state: result, replace: true }); // send score & total to result page
   };
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
-  };
+  // const formatTime = (seconds) => {
+  //   const mins = Math.floor(seconds / 60);
+  //   const secs = seconds % 60;
+  //   return `${mins.toString().padStart(2, "0")}:${secs
+  //     .toString()
+  //     .padStart(2, "0")}`;
+  // };
 
   if (loading) return <CircularProgress />;
   if (!currentQuestion) return null;
@@ -121,9 +122,9 @@ export const Exam = () => {
           justifyContent="flex-end"
           mb={2} // margin bottom for spacing
         >
-          <Typography variant="h6" color="error">
+          {/* <Typography variant="h6" color="error">
             Time Left: {formatTime(timer)}
-          </Typography>
+          </Typography> */}
         </Box>
 
         {/* Question Text */}
