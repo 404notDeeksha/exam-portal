@@ -38,6 +38,11 @@ const resultSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  sessionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ExamSession",
+    required: true,
+  },
 });
 
 const Result = mongoose.model("Result", resultSchema);
