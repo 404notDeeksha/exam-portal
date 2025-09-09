@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.model.js";
 
 export const protect = async (req, res, next) => {
   let token;
@@ -15,8 +14,10 @@ export const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Attach user to request (without password)
-      req.user = await User.findById(decoded.id).select("-passwordHash");
+      // Attach userid to request (without password)
+      req.user = {
+        id: decoded.id,
+      };
       next();
     } catch (error) {
       console.error("Auth error:", error.message);

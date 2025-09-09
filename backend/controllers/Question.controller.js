@@ -28,7 +28,8 @@ export const getQuestions = async (req, res) => {
 // POST /api/exam/submit
 export const submitExam = async (req, res) => {
   try {
-    const { userId, answers, startedAt } = req.body;
+    const userId = req.user.id; // comes from token, not body
+    const { answers, startedAt } = req.body;
 
     // Check for valid user & data
     if (!userId || !answers || !Array.isArray(answers)) {
