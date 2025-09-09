@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -15,44 +15,94 @@ import { getExamQuestions, submitExam } from "../features/exam/examThunks";
 
 import { useNavigate } from "react-router-dom";
 import { routes } from "../constants/routes";
+import { EXAM_DURATION } from "../constants/examTime";
 
 export const Exam = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { questions, currentIndex, answers, timer, loading, error } =
-    useSelector((state) => state.exam);
+  const { questions, currentIndex, answers, loading, error } = useSelector(
+    (state) => state.exam
+  );
 
   const userId = useSelector((state) => state.auth.user.id);
 
-  console.log("Questions", questions);
-  console.log("current index", currentIndex);
-  console.log("answers", answers);
-  console.log("Loading", loading);
+  const currentQuestion = useMemo(() => {
+    return questions[currentIndex];
+  }, [questions, currentIndex]);
 
-  const currentQuestion = questions[currentIndex];
+  // 2. Timer State
+  const [remainingTime, setRemainingTime] = useState(EXAM_DURATION);
 
-  // Fetch questions on mount
+  // 3. Fetch questions on mount
   useEffect(() => {
     if (questions.length === 0) {
       dispatch(getExamQuestions());
     }
   }, [dispatch, questions.length]);
 
+  // 4. Initialize start time in localStorage
+  useEffect(() => {
+    let storedStart = Number(localStorage.getItem("examStartTime"));
 
-  const handleOptionChange = (event) => {
-    dispatch(
-      selectAnswer({
-        questionId: currentQuestion._id,
-        selectedAnswer: event.target.value,
-      })
-    );
+    if (!storedStart) {
+      storedStart = Date.now();
+      localStorage.setItem("examStartTime", storedStart);
+    }
+
+    const endTime = parseInt(storedStart, 10) + EXAM_DURATION;
+
+    let interval;
+    // Interval to update timer
+    const updateTimer = () => {
+      const now = Date.now();
+      const remaining = endTime - now;
+
+      if (remaining <= 0) {
+        clearInterval(interval);
+        handleSubmit(); // auto-submit
+      } else {
+        setRemainingTime(remaining);
+      }
+    };
+
+    updateTimer(); // immediately run once on mount
+
+    interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, []); // run once
+
+  // 4. Format time
+  const formatTime = (ms) => {
+    const totalSecs = Math.floor(ms / 1000);
+    const mins = Math.floor(totalSecs / 60);
+    const secs = totalSecs % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
-  const handleNext = () => dispatch(goToNext());
-  const handlePrevious = () => dispatch(goToPrev());
+  const handleOptionChange = useCallback(
+    (event) => {
+      if (!currentQuestion) return;
+      dispatch(
+        selectAnswer({
+          questionId: currentQuestion._id,
+          selectedAnswer: event.target.value,
+        })
+      );
+    },
+    [dispatch, currentQuestion]
+  );
 
-  const handleSubmit = async () => {
+  const handleNext = useCallback(() => dispatch(goToNext()), [dispatch]);
+  const handlePrevious = useCallback(() => dispatch(goToPrev()), [dispatch]);
+
+  const handleSubmit = useCallback(async () => {
+    // prevent multiple submits
+    if (!localStorage.getItem("examStartTime")) return;
+
     const answersArray = Object.entries(answers).map(
       ([questionId, selectedAnswer]) => ({
         questionId,
@@ -60,25 +110,27 @@ export const Exam = () => {
       })
     );
 
-    const result = await dispatch(
-      submitExam({ userId, answers: answersArray })
-    ).unwrap();
+    try {
+      const result = await dispatch(
+        submitExam({
+          userId,
+          answers: answersArray,
+          startedAt: Number(localStorage.getItem("examStartTime")), // send to backend
+        })
+      ).unwrap();
 
-    navigate(routes.result, { state: result, replace: true }); // send score & total to result page
-  };
+      // clear storage to block retake
+      localStorage.removeItem("examStartTime");
 
-  // const formatTime = (seconds) => {
-  //   const mins = Math.floor(seconds / 60);
-  //   const secs = seconds % 60;
-  //   return `${mins.toString().padStart(2, "0")}:${secs
-  //     .toString()
-  //     .padStart(2, "0")}`;
-  // };
+      navigate(routes.result, { state: result, replace: true });
+    } catch (err) {
+      console.error("Submit failed:", err);
+    }
+  });
 
   if (loading) return <CircularProgress />;
   if (!currentQuestion) return null;
 
-  console.log("Error -->", error);
   return (
     <Box
       minHeight="100vh"
@@ -103,9 +155,9 @@ export const Exam = () => {
           justifyContent="flex-end"
           mb={2} // margin bottom for spacing
         >
-          {/* <Typography variant="h6" color="error">
-            Time Left: {formatTime(timer)}
-          </Typography> */}
+          <Typography variant="h6" color="error">
+            Time Left: {formatTime(remainingTime)}
+          </Typography>
         </Box>
 
         {/* Question Text */}
