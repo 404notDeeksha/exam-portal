@@ -30,13 +30,14 @@ export const submitExam = async (req, res) => {
   try {
     const userId = req.user.id; // comes from token, not body
     const { answers, startedAt } = req.body;
-
     // Check for valid user & data
-    if (!userId || !answers || !Array.isArray(answers)) {
+
+    if (!userId || !answers || !Array.isArray(answers) || !startedAt) {
       return res.status(400).json({ message: "Invalid submission data" });
     }
 
-    const startedAtMs = new Date(startedAt).getTime();
+    const startedAtMs = Number(startedAt);
+
     if (Number.isNaN(startedAtMs)) {
       return res.status(400).json({ message: "Invalid startedAt timestamp" });
     }
@@ -81,8 +82,8 @@ export const submitExam = async (req, res) => {
       userId,
       answers: evaluatedAnswers,
       score,
-      startedAt: new Date(startedAtMs),
-      submittedAt: new Date(now),
+      startedAt: startedAtMs,
+      submittedAt: now,
     });
     await newResult.save();
 

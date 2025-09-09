@@ -35,11 +35,8 @@ const resultSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    startedAt: { type: Date, required: true },
-    submittedAt: {
-      type: Date,
-      default: Date.now,
-    },
+    startedAt: { type: Number, required: true },
+    submittedAt: { type: Number, required: true },
   },
   { timestamps: true }
 );

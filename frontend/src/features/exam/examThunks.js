@@ -26,9 +26,9 @@ export const getExamQuestions = createAsyncThunk(
 
 export const submitExam = createAsyncThunk(
   "exam/submit",
-  async ({ userId, answers }, thunkAPI) => {
+  async ({ userId, answers, startedAt }, thunkAPI) => {
     try {
-      return await examService.submitExamAPI({ userId, answers });
+      return await examService.submitExamAPI({ userId, answers, startedAt });
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to submit exam"
